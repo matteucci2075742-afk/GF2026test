@@ -13,10 +13,13 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Vector2 moveInput;
     private bool isGrounded;
+    private GameUI gameUI;
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         animator = GetComponentInChildren<Animator>();
+        gameUI = FindAnyObjectByType<GameUI>();
+
     }
 
     void Update()
@@ -84,4 +87,19 @@ public class PlayerController : MonoBehaviour
 
         animator.SetFloat("Speed", currentSpeed);
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Coin"))
+        {
+            Coin coin = collision.gameObject.GetComponent<Coin>();
+
+            if (coin != null)
+            {
+                gameUI.AddScore(coin.GetScoreValue());
+                Destroy(coin.gameObject);
+            }
+        }
+    }
+
 }
